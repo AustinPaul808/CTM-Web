@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chess Tournament Manager - PRD</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 14mm 16mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    font-size: 11.5px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page {
+    position: relative;
+    page-break-after: always;
+    min-height: 265mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .page:last-child {
+    page-break-after: auto;
+  }
+
+  .page-content {
+    flex: 1;
+  }
+
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 8px;
+    margin-top: 16px;
+  }
+
+  /* Header Bar */
+  .hero-header {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 18px 24px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .hero-title h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin: 0 0 4px 0;
+    color: #ffffff;
+  }
+
+  .hero-title p {
+    margin: 0;
+    font-size: 11.5px;
+    color: #94a3b8;
+  }
+
+  .badge-spec {
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  /* Meta Bar */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .meta-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .meta-value {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  /* Section Styling */
+  .section-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 5px;
+    margin-top: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .subsection-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 14px;
+    margin-bottom: 8px;
+  }
+
+  /* Callout Boxes */
+  .callout-blue {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 10px 14px;
+    border-radius: 0 4px 4px 0;
+    font-size: 11px;
+    color: #1e3a8a;
+    margin: 12px 0;
+  }
+
+  .callout-blue strong {
+    color: #1d4ed8;
+  }
+
+  /* 2-Column Persona Grid */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 10px;
+  }
+
+  .persona-card {
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+
+  .persona-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 12px;
+    color: #0f172a;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .persona-card ul {
+    margin: 0;
+    padding-left: 16px;
+    font-size: 10.5px;
+    color: #334155;
+  }
+
+  .persona-card li {
+    margin-bottom: 5px;
+  }
+
+  /* End-to-End Operational Flow */
+  .flow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .flow-item {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .flow-num {
+    background: #0f172a;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .flow-content {
+    font-size: 10.8px;
+    color: #334155;
+  }
+
+  .flow-content strong {
+    color: #0f172a;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    margin-bottom: 14px;
+    font-size: 10.5px;
+  }
+
+  th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+    text-align: left;
+    padding: 7px 10px;
+    border-top: 1px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+  }
+
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  /* Format Cards Grid */
+  .format-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .format-card {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px;
+    background: #ffffff;
+  }
+
+  .format-card h4 {
+    margin: 0 0 6px 0;
+    font-size: 11.5px;
+    color: #1e3a8a;
+    font-weight: 700;
+  }
+
+  .format-card p {
+    margin: 0;
+    font-size: 10.5px;
+    color: #475569;
+    line-height: 1.45;
+  }
+
+  /* Architecture Box */
+  .arch-box {
+    background: #0f172a;
+    color: #f8fafc;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    line-height: 1.6;
+    margin: 12px 0;
+    border: 1px solid #334155;
+  }
+
+  .arch-box pre {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: inherit;
+  }
+
+  /* Dashboard Mockup */
+  .mockup-box {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    line-height: 1.45;
+    color: #1e293b;
+    margin: 10px 0;
+  }
+
+  /* Podium */
+  .podium-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 14px;
+    margin: 16px 0 20px 0;
+  }
+
+  .podium-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 140px;
+  }
+
+  .podium-box {
+    width: 100%;
+    border-radius: 6px;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .podium-champion {
+    background: #fefce8;
+    border: 2px solid #eab308;
+    height: 110px;
+  }
+
+  .podium-second {
+    background: #f1f5f9;
+    border: 2px solid #94a3b8;
+    height: 95px;
+  }
+
+  .podium-third {
+    background: #fff7ed;
+    border: 2px solid #f97316;
+    height: 85px;
+  }
+
+  .podium-medal {
+    font-size: 22px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .podium-title {
+    font-size: 9.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #475569;
+    margin-bottom: 3px;
+  }
+
+  .podium-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+  }
+
+  .podium-pts {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #2563eb;
+  }
+
+  /* Roadmap Cards */
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 10px;
+  }
+
+  .roadmap-card {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px 14px;
+    background: #ffffff;
+  }
+
+  .roadmap-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 11.5px;
+    color: #1e3a8a;
+    font-weight: 700;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 6px;
+  }
+
+  .roadmap-card ul {
+    margin: 0;
+    padding-left: 16px;
+    font-size: 10.5px;
+    color: #334155;
+  }
+
+  .roadmap-card li {
+    margin-bottom: 5px;
+  }
+
+  .code-tag {
+    font-family: 'JetBrains Mono', monospace;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    color: #0f172a;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="hero-header">
+      <div class="hero-title">
+        <h1>CHESS TOURNAMENT MANAGER</h1>
+        <p>Product Requirements Document (PRD) — v1.0 MVP</p>
+      </div>
+      <div class="badge-spec">SPECIFICATION</div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <span class="meta-label">Product Type</span>
+        <span class="meta-value">Web Application</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Target Stack</span>
+        <span class="meta-value">React / Node / Postgres</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Primary Metric</span>
+        <span class="meta-value">500 Players / 50 Rounds</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Document Date</span>
+        <span class="meta-value">March 2026</span>
+      </div>
+    </div>
+
+    <div class="section-title">1. EXECUTIVE PRODUCT OVERVIEW</div>
+    <p style="margin: 6px 0 10px 0; font-size: 11px; color: #334155;">
+      <strong>Chess Tournament Manager</strong> is a clean, lightweight web application designed for tournament organizers conducting school, college, local club, and amateur FIDE-style chess events. The platform removes administrative overhead by automating pairing logic, result tracking, standings calculation, and performance rating estimations without relying on bloated interfaces or excessive visual clutter.
+    </p>
+
+    <div class="callout-blue">
+      <strong>Core Design Goal:</strong> Prioritize structural simplicity, strict computational correctness (especially regarding FIDE tiebreaks and Swiss pairing constraints), and high operational reliability over heavy UI framework overhead.
+    </div>
+
+    <div class="section-title">2. TARGET PERSONA & USER REQUIREMENTS</div>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="persona-header">♟ Tournament Organizer</div>
+        <ul>
+          <li>Needs rapid multi-player onboarding (bulk or single entry).</li>
+          <li>Requires strict algorithmic automated pairings (Swiss, Round Robin, Knockout, Arena).</li>
+          <li>Demands effortless result entry and instant standing updates.</li>
+          <li>Wants zero manual tiebreak or performance calculations.</li>
+          <li>Controls round advancement, bye management, and forfeits.</li>
+        </ul>
+      </div>
+      <div class="persona-card">
+        <div class="persona-header">👤 Players & Spectators</div>
+        <ul>
+          <li>Requires clear round pairing boards (Opponent, Color, Board #).</li>
+          <li>Views live, real-time updated leaderboards and results.</li>
+          <li>Accesses personal performance metrics and FIDE rating deltas.</li>
+          <li>Mobile-responsive access to active tournament statuses.</li>
+          <li>Inspects round-by-round tournament match history.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-title">3. END-TO-END OPERATIONAL FLOW</div>
+    <div class="flow-list">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div class="flow-content"><strong>Tournament Creation:</strong> Define Name, Location, Organizer, Format, Number of Rounds, Rating System, and Time Control.</div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div class="flow-content"><strong>Player Roster Management:</strong> Input player details, FIDE IDs, ratings, age, federation, and club/institutional affiliations.</div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">3</div>
+        <div class="flow-content"><strong>Engine Initialization:</strong> Lock roster, initialize seeds by rating, and trigger Round 1 pairing algorithm.</div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">4</div>
+        <div class="flow-content"><strong>Round Execution & Result Entry:</strong> Record match outcomes (1-0, 0-1, ½-½, Byes, Forfeits) with live validation.</div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">5</div>
+        <div class="flow-content"><strong>Standings & Re-Pairing:</strong> System auto-calculates Buchholz/Sonneborn-Berger tiebreaks and generates subsequent round pairings.</div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">6</div>
+        <div class="flow-content"><strong>Tournament Conclusion:</strong> Lock final state upon round completion, display podium, and generate final performance rankings.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Chess Tournament Manager PRD</span>
+    <span>Page 1</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="section-title">4. FUNCTIONAL REQUIREMENTS: SETUP & ROSTER MANAGEMENT</div>
+    
+    <div class="subsection-title">4.1 Tournament Configuration Module</div>
+    <p style="margin: 0 0 6px 0; font-size: 10.5px; color: #475569;">The organizer interface provides a streamlined creation form with strict client-side and server-side validation:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>Type / Options</th>
+          <th>Constraint / Validation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tournament Name</strong></td>
+          <td>Text Input</td>
+          <td>Required (e.g., "FRCRCE Chess Championship 2026")</td>
+        </tr>
+        <tr>
+          <td><strong>Location / Host</strong></td>
+          <td>Text Input</td>
+          <td>Required (e.g., "Mumbai, India")</td>
+        </tr>
+        <tr>
+          <td><strong>Organizer Name</strong></td>
+          <td>Text Input</td>
+          <td>Required (e.g., "College Chess Committee")</td>
+        </tr>
+        <tr>
+          <td><strong>Tournament Type</strong></td>
+          <td>Dropdown</td>
+          <td>Swiss System, Round Robin, Arena, Knockout</td>
+        </tr>
+        <tr>
+          <td><strong>Number of Rounds</strong></td>
+          <td>Numeric Input</td>
+          <td>Integer min 1, max 50 (Organizer controlled)</td>
+        </tr>
+        <tr>
+          <td><strong>Time Control</strong></td>
+          <td>Select / Text</td>
+          <td>Optional (e.g., "10+0 Rapid", "90+30 Classical", "3+2 Blitz")</td>
+        </tr>
+        <tr>
+          <td><strong>Rating System</strong></td>
+          <td>Dropdown</td>
+          <td>FIDE System / Custom Rating</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="subsection-title">4.2 Player Roster Schema & Data Table</div>
+    <p style="margin: 0 0 6px 0; font-size: 10.5px; color: #475569;">Player inputs capture essential identity metrics to allow correct rating calculations, color history tracking, and seeding:</p>
+    <table>
+      <thead>
+        <tr>
+          <th># Seed</th>
+          <th>Player Name</th>
+          <th>FIDE ID</th>
+          <th>Rating</th>
+          <th>Age</th>
+          <th>Fed / Club</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>Magnus Carlsen</strong></td>
+          <td>1503014</td>
+          <td>2837</td>
+          <td>35</td>
+          <td>NOR / Offerspill</td>
+          <td><span class="code-tag">Edit</span> <span class="code-tag">Delete</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>Hikaru Nakamura</strong></td>
+          <td>2016192</td>
+          <td>2816</td>
+          <td>38</td>
+          <td>USA / Chess.com</td>
+          <td><span class="code-tag">Edit</span> <span class="code-tag">Delete</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>Fabiano Caruana</strong></td>
+          <td>2020000</td>
+          <td>2779</td>
+          <td>34</td>
+          <td>USA / Saint Louis</td>
+          <td><span class="code-tag">Edit</span> <span class="code-tag">Delete</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>Vidit Gujrathi</strong></td>
+          <td>5029410</td>
+          <td>2720</td>
+          <td>31</td>
+          <td>IND / PSPB</td>
+          <td><span class="code-tag">Edit</span> <span class="code-tag">Delete</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">5. SUPPORTED TOURNAMENT FORMATS</div>
+    <div class="format-grid">
+      <div class="format-card">
+        <h4>A. Swiss System</h4>
+        <p>Non-eliminatory system pairing players with similar scores. Strict constraints prevent repeat matchups, enforce color balance (maximum 2 consecutive same colors; difference |W - B| &le; 2), and assigns half-point/full-point byes for odd roster counts.</p>
+      </div>
+      <div class="format-card">
+        <h4>B. Round Robin</h4>
+        <p>All players face every other player once. Automatically generates complete N-1 rounds (even) or N rounds (odd) using standard Berger table round-robin rotation. Automatically handles odd-player byes seamlessly.</p>
+      </div>
+      <div class="format-card">
+        <h4>C. Knockout Bracket</h4>
+        <p>Direct elimination single-elimination bracket for 8, 16, 32, or 64 players. Winners automatically advance to subsequent nodes (Round of 16 &rarr; Quarterfinals &rarr; Semifinals &rarr; Championship Finals).</p>
+      </div>
+      <div class="format-card">
+        <h4>D. Simplified Arena</h4>
+        <p>Continuous fast-pairing queue logic designed for rapid/blitz time controls. As players finish games, they re-enter the pairing pool and are paired dynamically with the closest available opponent by score.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Chess Tournament Manager PRD</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 3 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="section-title">6. SWISS PAIRING ALGORITHM ARCHITECTURE</div>
+    <p style="margin: 0 0 6px 0; font-size: 10.5px; color: #475569;">The Swiss Pairing Engine is decoupled as a dedicated backend service module (<span class="code-tag">swissPairing.js</span>) to ensure mathematical correctness, deterministic behavior, and testability without UI thread blockage:</p>
+
+    <div class="arch-box">
+<pre>[Player Pool] ──> Sort by Score (Desc) & Rating (Desc)
+      │
+      ▼
+[Group by Score Tier] (e.g., 3.0 pts group, 2.5 pts group, 2.0 pts group)
+      │
+      ▼
+┌──────────────────────────── Check Constraints ────────────────────────────┐
+│ 1. No repeat opponents                                                    │
+│ 2. Color Balance (-2 <= White - Black <= +2)                             │
+│ 3. Avoid 3 consecutive same colors                                        │
+│ 4. Deterministic bye allocation to lowest ranked eligible player         │
+└─────────────────────────────────────┬─────────────────────────────────────┘
+      │
+      ▼
+[Backtracking Matcher] ──> If invalid, downfloat player to lower score group
+      │
+      ▼
+[Assign Colors by Color Difference & Alternation History]
+      │
+      ▼
+[Output Board List with Board Numbers & Color Allocations]</pre>
+    </div>
+
+    <div class="section-title">7. ROUND RESULTS & STANDINGS SYSTEM</div>
+
+    <div class="subsection-title">7.1 Valid Match Results</div>
+    <ul style="margin: 4px 0 12px 18px; font-size: 10.5px; color: #334155; line-height: 1.6;">
+      <li><strong>1 - 0:</strong> White Win (White +1.0, Black 0.0)</li>
+      <li><strong>0 - 1:</strong> Black Win (Black +1.0, White 0.0)</li>
+      <li><strong>½ - ½:</strong> Draw (White +0.5, Black +0.5)</li>
+      <li><strong>1 - 0 (BYE) / ½ - ½ (BYE):</strong> Unpaired Full-Point / Half-Point Bye (+1.0 / +0.5 score, no rating delta)</li>
+      <li><strong>1 - 0 (Forfeit) / 0 - 1 (Forfeit):</strong> Opponent No-Show (Counts for score & tiebreaks, excluded from FIDE rating delta)</li>
+    </ul>
+
+    <div class="subsection-title">7.2 Tiebreak Calculation Rules</div>
+    <p style="margin: 0 0 6px 0; font-size: 10.5px; color: #475569;">When scores are tied, rankings are determined by the following hierarchy of tiebreak systems:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Tiebreak System</th>
+          <th>Description / Calculation Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Direct Encounter</strong></td>
+          <td>Head-to-head result between the tied players (applicable if all tied players played each other).</td>
+        </tr>
+        <tr>
+          <td><strong>2. Buchholz Cut-1</strong></td>
+          <td>Sum of opponents' final scores, excluding the single lowest-scoring opponent.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Buchholz System</strong></td>
+          <td>Total sum of scores of all opponents faced throughout the tournament.</td>
+        </tr>
+        <tr>
+          <td><strong>4. Sonneborn-Berger</strong></td>
+          <td>Sum of scores of defeated opponents plus 50% of the scores of drawn opponents.</td>
+        </tr>
+        <tr>
+          <td><strong>5. Performance Rating</strong></td>
+          <td>Calculated rating strength based on opponent average rating and total score percentage.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-footer">
+    <span>Chess Tournament Manager PRD</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 4 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="section-title">8. USER INTERFACE LAYOUT SPECIFICATION</div>
+    <p style="margin: 0 0 6px 0; font-size: 10.5px; color: #475569;">The interface uses a clean, focused SaaS layout with high tabular data density, interactive modals, and immediate actionable control items:</p>
+
+    <div class="mockup-box">
+<pre>┌─────────────────────────────────────────────────────────────────────────────┐
+│ ♟ CHESS TOURNAMENT MANAGER [ Active: FRCRCE Championship 2026 ]              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Dashboard  |  Players  |  Pairings  |  Leaderboard  |  Rounds  |  Settings  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ [ Round: 4 / 7 ]   [ Active Players: 48 ]   [ Active Games: 24 ]            │
+│ CURRENT ROUND PAIRINGS (ROUND 4)                       [ Generate Next Round ]│
+│                                                                             │
+│ Board │ White Player (Rating) │ Score   │ Black Player (Rating) │ Result    │
+│ ──────┼───────────────────────┼─────────┼───────────────────────┼────────── │
+│   1   │ Carlsen, M. (2837)    │ 3.0-3.0 │ Nakamura, H. (2816)   │ [ 1 - 0 ] │
+│   2   │ Caruana, F. (2779)    │ 2.5-2.5 │ Gujrathi, V. (2720)   │ [ ½ - ½ ] │
+│   3   │ Erigaisi, A. (2795)   │ 2.5-2.5 │ Gukesh, D. (2785)     │ [ 0 - 1 ] │
+│                                                                             │
+│ TOP STANDINGS: 1. Carlsen, M (4.0 pts) | 2. Gukesh, D (3.5) | 3. Caruana (3.0)│
+└─────────────────────────────────────────────────────────────────────────────┘</pre>
+    </div>
+
+    <div class="section-title">9. FINAL PODIUM DISPLAY SPECIFICATION</div>
+    <p style="margin: 0 0 6px 0; font-size: 10.5px; color: #475569;">Upon round limit completion, the dashboard unlocks the final tournament results and celebratory podium summary:</p>
+
+    <div class="podium-wrapper">
+      <!-- 2nd Place -->
+      <div class="podium-col">
+        <div class="podium-medal">🥈</div>
+        <div class="podium-box podium-second">
+          <span class="podium-title">2nd Place</span>
+          <span class="podium-name">H. Nakamura</span>
+          <span class="podium-pts">6.0 Pts</span>
+          <span style="font-size: 9px; color: #64748b; margin-top: 4px;">Buchholz: 29.5</span>
+        </div>
+      </div>
+
+      <!-- Champion -->
+      <div class="podium-col">
+        <div class="podium-medal">🥇</div>
+        <div class="podium-box podium-champion">
+          <span class="podium-title">CHAMPION</span>
+          <span class="podium-name">M. Carlsen</span>
+          <span class="podium-pts">7.0 Pts</span>
+          <span style="font-size: 9px; color: #854d0e; margin-top: 4px;">Perf Rating: 2945</span>
+        </div>
+      </div>
+
+      <!-- 3rd Place -->
+      <div class="podium-col">
+        <div class="podium-medal">🥉</div>
+        <div class="podium-box podium-third">
+          <span class="podium-title">3rd Place</span>
+          <span class="podium-name">F. Caruana</span>
+          <span class="podium-pts">5.5 Pts</span>
+          <span style="font-size: 9px; color: #9a3412; margin-top: 4px;">Buchholz: 28.0</span>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player Name</th>
+          <th>Federation</th>
+          <th>Initial Rating</th>
+          <th>Total Points</th>
+          <th>Performance Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🥇 1</td>
+          <td><strong>Magnus Carlsen</strong></td>
+          <td>NOR</td>
+          <td>2837</td>
+          <td><strong>7.0</strong></td>
+          <td>2945</td>
+        </tr>
+        <tr>
+          <td>🥈 2</td>
+          <td><strong>Hikaru Nakamura</strong></td>
+          <td>USA</td>
+          <td>2816</td>
+          <td><strong>6.0</strong></td>
+          <td>2850</td>
+        </tr>
+        <tr>
+          <td>🥉 3</td>
+          <td><strong>Fabiano Caruana</strong></td>
+          <td>USA</td>
+          <td>2779</td>
+          <td><strong>5.5</strong></td>
+          <td>2810</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>Vidit Gujrathi</strong></td>
+          <td>IND</td>
+          <td>2720</td>
+          <td><strong>5.0</strong></td>
+          <td>2740</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-footer">
+    <span>Chess Tournament Manager PRD</span>
+    <span>Page 4</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 5 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="section-title">10. SYSTEM ARCHITECTURE & RELATIONAL DATA MODEL</div>
+    <p style="margin: 0 0 6px 0; font-size: 10.5px; color: #475569;">The backend is structured around a relational schema in PostgreSQL managed via Prisma ORM:</p>
+
+    <div class="arch-box">
+<pre>// PostgreSQL Prisma Entity Schema Overview
+Tournament ────&lt; TournamentPlayer &gt;──── Player
+     │
+     └───&lt; Round ────&lt; Match ────&lt; PlayerRoundStats
+
+[Tournament]       : id, name, location, date, type, number_of_rounds, status
+[Player]           : id, name, fide_id, rating, age, federation, club, title
+[TournamentPlayer] : tournament_id, player_id, starting_rank, score, wins, draws, losses, perf_rating
+[Round]            : id, tournament_id, round_number, status (PENDING, ACTIVE, COMPLETED)
+[Match]            : id, round_id, board_number, white_player_id, black_player_id, result, is_bye</pre>
+    </div>
+
+    <div class="section-title">11. REST API SPECIFICATION</div>
+    <table>
+      <thead>
+        <tr>
+          <th>HTTP Verb</th>
+          <th>Endpoint Path</th>
+          <th>Description / Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="code-tag">POST</span></td>
+          <td><code>/api/tournaments</code></td>
+          <td>Create new tournament instance</td>
+        </tr>
+        <tr>
+          <td><span class="code-tag">POST</span></td>
+          <td><code>/api/tournaments/:id/players</code></td>
+          <td>Add player to tournament roster</td>
+        </tr>
+        <tr>
+          <td><span class="code-tag">POST</span></td>
+          <td><code>/api/tournaments/:id/rounds</code></td>
+          <td>Initialize next tournament round</td>
+        </tr>
+        <tr>
+          <td><span class="code-tag">POST</span></td>
+          <td><code>/api/rounds/:id/pairings</code></td>
+          <td>Trigger Swiss / Round Robin pairing engine</td>
+        </tr>
+        <tr>
+          <td><span class="code-tag">PUT</span></td>
+          <td><code>/api/matches/:id/result</code></td>
+          <td>Update match result & refresh standings</td>
+        </tr>
+        <tr>
+          <td><span class="code-tag">GET</span></td>
+          <td><code>/api/tournaments/:id/standings</code></td>
+          <td>Fetch real-time leaderboards & tiebreaks</td>
+        </tr>
+        <tr>
+          <td><span class="code-tag">GET</span></td>
+          <td><code>/api/tournaments/:id/results</code></td>
+          <td>Fetch final tournament results & podium</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">12. EXECUTION ROADMAP & DEFINITION OF DONE</div>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <h4>Phase 1: Core Foundation (MVP)</h4>
+        <ul>
+          <li>Tournament CRUD & Player Registration</li>
+          <li>Player roster table with bulk import & editing</li>
+          <li>Basic UI Navigation & Manual Pairings</li>
+          <li>PostgreSQL Database Schema & Prisma ORM setup</li>
+        </ul>
+      </div>
+      <div class="roadmap-card">
+        <h4>Phase 2: Automated Pairing Engines</h4>
+        <ul>
+          <li>Swiss Pairing Engine with color balancing & backtracking</li>
+          <li>Round Robin Berger rotation algorithm</li>
+          <li>Tiebreak engines (Buchholz, Sonneborn-Berger, Direct Encounter)</li>
+          <li>Live Leaderboard & Standings API</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout-blue" style="margin-top: 14px;">
+      <strong>Definition of Done:</strong> An organizer can add 50 players, run a 7-round Swiss tournament, enter match results, and generate accurate final standings with tiebreaks without a single manual calculation.
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Chess Tournament Manager PRD</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+</body>
+</html>

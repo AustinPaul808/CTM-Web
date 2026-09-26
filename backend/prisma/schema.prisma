@@ -1,0 +1,100 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tournament {
+  id              String             @id @default(cuid())
+  name            String
+  location        String?
+  organizer       String?
+  startDate       DateTime           @default(now())
+  type            String             @default("SWISS") // SWISS, ROUND_ROBIN, KNOCKOUT, ARENA
+  numberOfRounds  Int                @default(7)
+  currentRound    Int                @default(0)
+  timeControl     String?            @default("10+0 Rapid")
+  ratingSystem    String             @default("FIDE")
+  status          String             @default("REGISTRATION") // REGISTRATION, ACTIVE, COMPLETED
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  players         TournamentPlayer[]
+  rounds          Round[]
+}
+
+model Player {
+  id          String             @id @default(cuid())
+  name        String
+  fideId      String?
+  rating      Int                @default(1500)
+  age         Int?
+  federation  String?            @default("FIDE")
+  club        String?
+  title       String?
+  gender      String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  tournaments TournamentPlayer[]
+}
+
+model TournamentPlayer {
+  id                String     @id @default(cuid())
+  tournamentId      String
+  playerId          String
+  startingSeed      Int        @default(1)
+  score             Float      @default(0.0)
+  wins              Int        @default(0)
+  draws             Int        @default(0)
+  losses            Int        @default(0)
+  buchholz          Float      @default(0.0)
+  buchholzCut1      Float      @default(0.0)
+  sonnebornBerger   Float      @default(0.0)
+  performanceRating Int?
+  rank              Int?
+  hasReceivedBye    Boolean    @default(false)
+  colorDifference   Int        @default(0) // white_count - black_count
+  consecutiveColor  String?    // "W1", "W2", "B1", "B2"
+
+  tournament        Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  player            Player     @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, playerId])
+}
+
+model Round {
+  id           String     @id @default(cuid())
+  tournamentId String
+  roundNumber  Int
+  status       String     @default("ACTIVE") // ACTIVE, COMPLETED
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  matches      Match[]
+
+  @@unique([tournamentId, roundNumber])
+}
+
+model Match {
+  id            String   @id @default(cuid())
+  roundId       String
+  boardNumber   Int
+  whitePlayerId String?
+  blackPlayerId String?
+  whiteScore    Float?
+  blackScore    Float?
+  result        String?  // "1-0", "0-1", "1/2-1/2", "1-0 (BYE)", "1-0 (FORFEIT)", "0-1 (FORFEIT)"
+  isBye         Boolean  @default(false)
+  isForfeit     Boolean  @default(false)
+  status        String   @default("PENDING") // PENDING, COMPLETED
+  bracketNode   String?  // For knockout brackets e.g. "R1_M1", "FINAL"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  round         Round    @relation(fields: [roundId], references: [id], onDelete: Cascade)
+}
